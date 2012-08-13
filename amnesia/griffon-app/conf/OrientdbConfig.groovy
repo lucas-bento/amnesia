@@ -1,22 +1,23 @@
 database {
-    username = 'guest'
-    password = 'guest'
-    type     = 'document' // accepted values are 'document', 'object'
+    username = 'admin'
+    password = 'admin'
+    type     = 'object' // accepted values are 'document', 'object'
+
 }
 environments {
     development {
         database {
-            url = 'local:/orient/databases/amnesia-dev'
+            url = 'local:${basedir}../orientdb/amnesia-dev'
         }
     }
     test {
         database {
-            url = 'local:/orient/databases/amnesia-test'
+            url = 'local:${basedir}../orientdb/amnesia-test'
         }
     }
     production {
         database {
-            url = 'local:/orient/databases/amnesia-prod'
+            url = 'local:/home/lucas/projects/amnesia/orientdb/amnesia-prod'
         }
     }
 }
