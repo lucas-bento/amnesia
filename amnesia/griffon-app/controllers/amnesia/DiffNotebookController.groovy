@@ -24,7 +24,9 @@ class DiffNotebookController {
 	
 	def getDiff(NotebookModel notebook){
 		def diff = new DiffNotebookModel( id:notebook.id, lastSynced:notebook.lastSynced, lastUpdated:notebook.lastUpdated )
-		diff.notes = notebook.collect(){it.creationDate > notebook.lastSynced}
+		diff.notes = notebook.notes.grep(){ it.creationDate > notebook.lastSynced }
+		
+		return diff
 	}
 	
 	

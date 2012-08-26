@@ -17,20 +17,25 @@ class DiffNotebookControllerTests extends GriffonUnitTestCase {
     void test_get_diff() {
 		def notebook = setUpNotebook()
 		
-		notebook.getDIff()
+		def diff = controller.getDiff(notebook)
 		
-        assert notebook.notes.size() == 1
+        assert diff.notes.size() == 1
     }
 	
 	def setUpNotebook(){
 		def notebook = new NotebookModel()
 		notebook.lastUpdated = new Date()
 		notebook.lastSynced = new Date() -2
-		def note1 = setUpNote( new Date() )
-		def note2 = setUpNote( new Date() )
+		def note1 = setUpNote( new Date() -3)
+		def note2 = setUpNote( new Date() -1 )
 		def notes = [ note1, note2 ]
 		notebook.notes = notes
 		
+		return notebook
+	}
+	
+	def setUpNote(date){
+		return new NoteModel(creationDate:date)
 	}
 	
 }
