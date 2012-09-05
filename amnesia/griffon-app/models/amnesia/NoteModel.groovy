@@ -1,15 +1,12 @@
 package amnesia
 
+import java.beans.*
 import groovy.beans.Bindable
+import ca.odell.glazedlists.*
 
 class NoteModel {
-	@Bindable String id
-	@Bindable String currentTitle
-	@Bindable String currentContent
-	@Bindable int currentVertion
-	@Bindable Date creationDate
-	@Bindable List<VersionModel> version
-	@Bindable List<TagModel> tags
-	@Bindable NotebookModel notebook
 	
+	@Bindable String id
+	@Bindable String currentContent
+ 	
 }

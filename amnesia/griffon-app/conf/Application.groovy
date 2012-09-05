@@ -1,6 +1,6 @@
 application {
     title = 'Amnesia'
-    startupGroups = ['amnesia']
+    startupGroups = ['notebook']
 
     // Should Griffon exit when no Griffon created frames are showing?
     autoShutdown = true
@@ -39,16 +39,17 @@ mvcGroups {
 
     // MVC Group for "note"
     'note' {
-        model      = 'amnesia.NoteModel'
-        view       = 'amnesia.NoteView'
-        controller = 'amnesia.NoteController'
+		model      = 'amnesia.NoteModel'
+		view       = 'amnesia.NoteView'
+		controller = 'amnesia.NoteController'
     }
 
     // MVC Group for "notebook"
     'notebook' {
-        model      = 'amnesia.NotebookModel'
-        view       = 'amnesia.NotebookView'
-        controller = 'amnesia.NotebookController'
+		model      = 'amnesia.NotebookModel'
+		view       = 'amnesia.NotebookView'
+		controller = 'amnesia.NotebookController'
+
     }
 
     // MVC Group for "amnesia"

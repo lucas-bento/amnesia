@@ -3,3 +3,6 @@
 .settings
 amnesia/staging
 USER_HOME
+amnesia/.groovy/
+amnesia/upgrade/
+amnesia-dev/

@@ -1,14 +1,22 @@
 package amnesia
 
+import ca.odell.glazedlists.gui.TableFormat;
+import ca.odell.glazedlists.swing.EventTableModel;
+
 class NoteController {
-    // these will be injected by Griffon
     def model
     def view
+	private mvcId
+	private notes
 
-    // void mvcGroupInit(Map args) {
-    //    // this method is called after model and view are injected
-    // }
-
+	void mvcGroupInit(Map args) {
+		mvcId = args.mvcId
+		notes = args.notes
+		model.id = mvcId
+		notes[mvcId] = this
+		
+    }
+	
     // void mvcGroupDestroy() {
     //    // this method is called when the group is destroyed
     // }

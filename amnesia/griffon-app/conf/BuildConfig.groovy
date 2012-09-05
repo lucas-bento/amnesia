@@ -99,9 +99,9 @@ signingkey {
 
 griffon {
     doc {
-        logo = '<a href="http://griffon-framework.org" target="_blank"><img alt="The Griffon Framework" src="../img/griffon.png" border="0"/></a>'
+        logo = '<a href="http://griffon.codehaus.org" target="_blank"><img alt="The Griffon Framework" src="../img/griffon.png" border="0"/></a>'
         sponsorLogo = "<br/>"
-        footer = "<br/><br/>Made with Griffon (1.0.0)"
+        footer = "<br/><br/>Made with Griffon (@griffon.version@)"
     }
 }
 
@@ -161,19 +161,17 @@ griffon.project.dependency.resolution = {
 
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
-        mavenLocal()
-        mavenCentral()
+        //mavenLocal()
+        //mavenCentral()
         //mavenRepo "http://snapshots.repository.codehaus.org"
         //mavenRepo "http://repository.codehaus.org"
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
     }
     dependencies {
-        String orientVersion = '1.0rc8'
-        
-        compile "com.orientechnologies:orient-commons:$orientVersion",
-                "com.orientechnologies:orientdb-core:$orientVersion",
-                "com.orientechnologies:orientdb-client:$orientVersion"
+        // specify dependencies here under either 'build', 'compile', 'runtime' or 'test' scopes eg.
+
+        // runtime 'mysql:mysql-connector-java:5.1.5'
     }
 }
 
@@ -193,4 +191,5 @@ log4j = {
 
 
 app.fileType = '.groovy'
+
 app.defaultPackageName = 'amnesia'

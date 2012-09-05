@@ -1,5 +1,7 @@
 package amnesia
 
+import java.awt.Label;
+
 application(title: 'amnesia',
   preferredSize: [320, 240],
   pack: true,
@@ -9,6 +11,13 @@ application(title: 'amnesia',
   iconImages: [imageIcon('/griffon-icon-48x48.png').image,
                imageIcon('/griffon-icon-32x32.png').image,
                imageIcon('/griffon-icon-16x16.png').image]) {
-    // add content here
-    label('Content Goes Here') // delete me
+		   
+	
+		   borderLayout()
+//		   button(constraints: NORTH, text: "Add detail", actionPerformed:controller.addDetail)
+		   scrollPane(constraints: CENTER) {
+		        panel(id: "masterPanel") {
+		            gridLayout(cols:1, rows: 0)
+		        }
+		   }		   
 }

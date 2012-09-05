@@ -1,5 +1,8 @@
 package amnesia
 
+
+
+
 application(title: 'amnesia',
   preferredSize: [320, 240],
   pack: true,
@@ -10,5 +13,13 @@ application(title: 'amnesia',
                imageIcon('/griffon-icon-32x32.png').image,
                imageIcon('/griffon-icon-16x16.png').image]) {
     // add content here
-    label('Content Goes Here') // delete me
+    label('Content Goes Here') 
+
+	label 'Anotação:'
+	textField columns: 20, text: bind('username', target: model)
+	label 'conteudo:'
+	passwordField columns: 20, text: bind('password', target: model)
+	label ''
+	
+	
 }
