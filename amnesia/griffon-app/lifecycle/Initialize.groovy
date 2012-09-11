@@ -12,7 +12,12 @@
  * - execInsideUISync { // your code }
  */
 
+import java.util.Date;
+
 import groovy.swing.SwingBuilder
+import amnesia.domain.Note;
+import amnesia.domain.Notebook;
+
 import com.orientechnologies.orient.core.db.ODatabase
 import com.orientechnologies.orient.core.db.object.ODatabaseObjectTx
 import org.slf4j.Logger
@@ -21,17 +26,32 @@ import org.slf4j.LoggerFactory
 import static griffon.util.GriffonApplicationUtils.isMacOSX
 
 
-SwingBuilder.lookAndFeel((isMacOSX ? 'system' : 'nimbus'), 'gtk', ['metal', [boldFonts: false]])
+//SwingBuilder.lookAndFeel((isMacOSX ? 'system' : 'nimbus'), 'gtk', ['metal', [boldFonts: false]])
 
 /* *** Cria uma base de dados do orientdb caso não exista uma  *** */  
 def databaseClass = app.class.classLoader.loadClass('OrientdbConfig')
 ConfigObject config = new ConfigSlurper(Environment.current.name).parse(databaseClass).database
 
 
-
 ODatabase database = new ODatabaseObjectTx( config.url )
 if ( !database.exists() ){
-	LoggerFactory.getLogger("Initialize.groovy").warn("Base de dados não encontrada. Uma nova sera criada: "+ config.url)
+	def log = LoggerFactory.getLogger("Initialize.groovy")
+	log.warn("Base de dados não encontrada. Uma nova sera criada: "+ config.url)
+	
 	database.create()
+	database.getEntityManager().registerEntityClasses("amnesia.domain");
+	
+	Notebook notebook =  new Notebook()
+	Note note = new Note(noteId:'note1',currentContent:'Exemplo de anotação.\nCrie novas anotações!', currentTitle:'Primeira Anotação')
+	
+	notebook.notebookId = "userNotebook"
+	notebook.lastSynced = new Date()
+	notebook.lastUpdated = new Date()
+	notebook.notes."${note.noteId}" = note
+	
+	database.save(notebook)
+	
+	log.info("Criado notebook: ${notebook}")
+	log.info("Criada anotação: ${note}")
 }
 

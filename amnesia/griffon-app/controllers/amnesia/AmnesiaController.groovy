@@ -1,13 +1,44 @@
 package amnesia
 
+import amnesia.domain.Notebook;
+import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery
+
 class AmnesiaController {
     // these will be injected by Griffon
     def model
     def view
 
-    // void mvcGroupInit(Map args) {
-    //    // this method is called after model and view are injected
-    // }
+     void mvcGroupInit(Map args) {
+		 def notebookGroup
+		 
+		 withOrientdb { String databaseName, orient ->
+			orient.getEntityManager().registerEntityClasses("amnesia.domain");
+			
+			List<Notebook> result = orient.query( new OSQLSynchQuery<Notebook>( "select * from Notebook where notebookId = 'userNotebook'" ) );
+			 
+			Notebook notebook = result.get(0)
+								 
+			def mvcId = notebook.id
+			notebookGroup = buildMVCGroup("notebook", mvcId, [domain:notebook])
+			 
+//			model.notes.'${noteGroup.model.id}' = notebookGroup
+			model.notebook = notebookGroup
+		}
+		 
+		 
+		 def root = view.notebookContainer.parent
+ 
+		 // remove mainPanel placeholder
+		 root.remove(view.notebookContainer)
+		 // inject the real deal
+		 root.add(notebookGroup.view.masterPanel)
+ 
+		 // rewire variable references
+		 view.notebookContainer = notebookGroup.view.masterPanel
+//		 builder.notebookContainer = notebookGroup.view.masterPanel
+
+		 
+     }
 
     // void mvcGroupDestroy() {
     //    // this method is called when the group is destroyed

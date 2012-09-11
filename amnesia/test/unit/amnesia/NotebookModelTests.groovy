@@ -1,5 +1,7 @@
 package amnesia
 
+import amnesia.model.NotebookModel;
+
 class NotebookModelTests extends GroovyTestCase {
 	
 	NotebookModel notebook

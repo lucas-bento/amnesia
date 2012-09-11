@@ -1,5 +1,7 @@
 package amnesia
 
+import amnesia.model.NoteModel;
+import amnesia.model.NotebookModel;
 import griffon.test.*
 
 class DiffNotebookControllerTests extends GriffonUnitTestCase {

@@ -1,6 +1,9 @@
 package amnesia
 
+import groovy.beans.Bindable;
+
 import java.beans.PropertyChangeListener
+import java.util.Date;
 
 class NotebookController {
     def model
@@ -16,6 +19,7 @@ class NotebookController {
 				 repaint()
 			 }
 		  }
+		 
 		  model.notes.addPropertyChangeListener({ e ->
 			  if (!(e instanceof groovy.util.ObservableMap.PropertyEvent)) return
 			  switch(e.type) {
@@ -28,23 +32,16 @@ class NotebookController {
 			  }
 		  } as PropertyChangeListener)
 		 
-		 
-		  withOrientdb { String databaseName, orient ->
-			 def tmpList = orient.browseClass('note').each { note ->
-				 
-				 
-				 def mvcId = "note"+ System.currentTimeMillis()
-				 def noteGroup = buildMVCGroup("note", mvcId, [notes: model.notes, mvcId: mvcId])
-				 
-				 model.notes.'${noteGroup.model.id}' = noteGroup
-				 
-				 
-				 noteGroup.model.currentContent = note.currentContent
+		  model.domain		= args.domain
+		  model.id			= args.domain.notebookId
+		  
+		  model.domain.notes.each { entry ->
+			  def note = entry.value
+			  
+			  def mvcId = note.noteId
+			  def noteGroup = buildMVCGroup("note", mvcId, ['domain':note, 'notes':model.notes, 'notebookGroup':app.groups["userNotebook"]])
+		  }
 
-			 }
-		}
-		 
-    	model.id = 'sera q essa merda pelo menos aparece?'
      }
 	 
 	 def addNote = { evt = null ->

@@ -1,7 +1,7 @@
 database {
     username = 'admin'
     password = 'admin'
-    type     = 'document' // accepted values are 'document', 'object'
+    type     = 'object' // accepted values are 'document', 'object'
 
 }
 environments {

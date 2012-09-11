@@ -1,5 +1,8 @@
 package amnesia
 
+import amnesia.model.DiffNotebookModel;
+import amnesia.model.NotebookModel;
+
 class DiffNotebookController {
     // these will be injected by Griffon
     def model
