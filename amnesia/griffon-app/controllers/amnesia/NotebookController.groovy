@@ -1,9 +1,8 @@
 package amnesia
 
-import groovy.beans.Bindable;
-
 import java.beans.PropertyChangeListener
-import java.util.Date;
+
+import amnesia.domain.Note
 
 class NotebookController {
     def model
@@ -32,8 +31,9 @@ class NotebookController {
 			  }
 		  } as PropertyChangeListener)
 		 
-		  model.domain		= args.domain
-		  model.id			= args.domain.notebookId
+		  model.notebookId	= args.domain.notebookId
+		  model.id			= args.domain.id
+		  model.domain 		= args.domain
 		  
 		  model.domain.notes.each { entry ->
 			  def note = entry.value
@@ -46,22 +46,9 @@ class NotebookController {
 	 
 	 def addNote = { evt = null ->
 		 def mvcId = "note"+ System.currentTimeMillis()
-		 return createMVCGroup("note", mvcId, [notes: model.notes, mvcId: mvcId])
+		 log.info(mvcId)
+		 Note note = new Note(noteId:mvcId, creationDate:new Date(), currentVersion:1, currentTitle:"", currentContent:"")
+		 
+		 return buildMVCGroup("note", mvcId, ['domain':note, 'notes':model.notes, 'notebookGroup':app.groups["userNotebook"]])
 	 }
-	 
-	 
-	 
-
-    // void mvcGroupDestroy() {
-    //    // this method is called when the group is destroyed
-    // }
-
-    /*
-        Remember that actions will be called outside of the UI thread
-        by default. You can change this setting of course.
-        Please read chapter 9 of the Griffon Guide to know more.
-       
-    def action = { evt = null ->
-    }
-    */
 }

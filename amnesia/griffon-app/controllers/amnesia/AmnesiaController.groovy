@@ -1,5 +1,6 @@
 package amnesia
 
+import amnesia.domain.Note
 import amnesia.domain.Notebook;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery
 
@@ -21,7 +22,6 @@ class AmnesiaController {
 			def mvcId = notebook.id
 			notebookGroup = buildMVCGroup("notebook", mvcId, [domain:notebook])
 			 
-//			model.notes.'${noteGroup.model.id}' = notebookGroup
 			model.notebook = notebookGroup
 		}
 		 
@@ -35,21 +35,13 @@ class AmnesiaController {
  
 		 // rewire variable references
 		 view.notebookContainer = notebookGroup.view.masterPanel
-//		 builder.notebookContainer = notebookGroup.view.masterPanel
-
-		 
      }
-
-    // void mvcGroupDestroy() {
-    //    // this method is called when the group is destroyed
-    // }
-
-    /*
-        Remember that actions will be called outside of the UI thread
-        by default. You can change this setting of course.
-        Please read chapter 9 of the Griffon Guide to know more.
-       
-    def action = { evt = null ->
-    }
-    */
+	 
+	 def addNote = { evt = null ->
+		 log.info("#######  addNote  #####")
+		 
+		 def notes = model.notebook.model.notes
+		 def mvcId = "note"+ System.currentTimeMillis()
+		 return buildMVCGroup("note", mvcId, ['domain':new Note(), 'notes':notes, 'notebookGroup':app.groups["userNotebook"]])
+	 }
 }

@@ -10,10 +10,7 @@ class NotebookModel {
 //	@Bindable Date lastUpdated
 	@Bindable ObservableMap notes = new ObservableMap()
 	
-	Notebook domain;
+	String notebookId
+	def domain
 	
-/*	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}*/
 }

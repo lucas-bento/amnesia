@@ -1,20 +1,29 @@
 package amnesia
 
+import java.awt.Font
+import java.awt.Color
 import java.awt.event.FocusEvent
-import java.beans.PropertyChangeEvent
+
+Font titulo = new Font("Serif", Font.BOLD, 14)
+Font italico = new Font("Serif", Font.ITALIC, 12)
 
 
-panel(id: "detailPanel", constraints: BorderLayout.CENTER, border: compoundBorder([emptyBorder(10), etchedBorder(shadow:Color.RED, highlight:Color.PINK, parent:true)])) {
-	gridLayout(cols: 1, rows: 0)
-	label(text: bind{ model.currentTitle })
-	textArea(id:'currentContentInput', lineWrap:true, 
-		 text: bind(source:model, sourceProperty:'currentContent', mutual:true
-//			 source:model, sourceProperty:'currentContent',
-//			 target:model, targetProperty:'currentContentBuffer'
-			 ), focusLost:{FocusEvent evt -> controller.save()}
-	)
+panel(id: "detailPanel",border: compoundBorder([emptyBorder(10), etchedBorder(shadow:Color.DARK_GRAY, highlight:Color.BLACK, parent:true)])) {
+	migLayout(layoutConstraints: "fill",constraints:"grow")
 	
-	button("Save", actionPerformed:controller.save)
+	textArea(text: bind(source:model, sourceProperty:'currentTitle', mutual:true), columns:10, font:titulo,constraints: "growx",
+			focusLost:{FocusEvent evt -> controller.save()}
+		)
+	
+	label(text: bind{model.creationDate == null ? "" : model.creationDate.format("dd MMM yyyy") }, constraints:"wrap", font:italico)
+		
+	textArea(id:'currentContentInput', lineWrap:true, constraints: "grow, wrap, spanx",
+			 
+		text: bind(source:model, sourceProperty:'currentContent', mutual:true),
+		 		focusLost:{FocusEvent evt -> controller.save()}
+	)
+		
+	button("Save", actionPerformed:controller.save, constraints: "skip, right, wrap")
 	
 }
 

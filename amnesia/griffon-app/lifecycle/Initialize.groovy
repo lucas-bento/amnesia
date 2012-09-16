@@ -42,12 +42,14 @@ if ( !database.exists() ){
 	database.getEntityManager().registerEntityClasses("amnesia.domain");
 	
 	Notebook notebook =  new Notebook()
-	Note note = new Note(noteId:'note1',currentContent:'Exemplo de anotação.\nCrie novas anotações!', currentTitle:'Primeira Anotação')
+	Note note = new Note(noteId:'note1',currentContent:'Exemplo de anotação.\nCrie novas anotações!', currentTitle:'Primeira Anotação', creationDate: new Date() -1)
+	Note note2 = new Note(noteId:'note2',currentContent:'Segunda Anotação', currentTitle:'Segunda Anotação', creationDate:new Date())
 	
 	notebook.notebookId = "userNotebook"
 	notebook.lastSynced = new Date()
 	notebook.lastUpdated = new Date()
 	notebook.notes."${note.noteId}" = note
+	notebook.notes."${note2.noteId}" = note2
 	
 	database.save(notebook)
 	

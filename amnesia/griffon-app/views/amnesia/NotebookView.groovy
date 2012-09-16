@@ -2,5 +2,6 @@ package amnesia
 
 
     panel(id: "masterPanel") {
-        gridLayout(cols:1, rows: 0)
+ 		button( /*constraints: NORTH,*/ text: "Nova Anotação", actionPerformed: controller.addNote)
+		gridLayout(cols:1, rows: 0)
     }
