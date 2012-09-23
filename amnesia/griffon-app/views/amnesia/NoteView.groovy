@@ -22,9 +22,6 @@ panel(id: "detailPanel",border: compoundBorder([emptyBorder(10), etchedBorder(sh
 		text: bind(source:model, sourceProperty:'currentContent', mutual:true),
 		 		focusLost:{FocusEvent evt -> controller.save()}
 	)
-		
-	button("Save", actionPerformed:controller.save, constraints: "skip, right, wrap")
-	
 }
 
 

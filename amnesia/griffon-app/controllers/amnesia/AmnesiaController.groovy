@@ -38,10 +38,20 @@ class AmnesiaController {
      }
 	 
 	 def addNote = { evt = null ->
-		 log.info("#######  addNote  #####")
-		 
-		 def notes = model.notebook.model.notes
 		 def mvcId = "note"+ System.currentTimeMillis()
-		 return buildMVCGroup("note", mvcId, ['domain':new Note(), 'notes':notes, 'notebookGroup':app.groups["userNotebook"]])
+		 log.info(mvcId)
+		 Note note = new Note(noteId:mvcId, creationDate:new Date(), currentVersion:1, currentTitle:"", currentContent:"")
+		 def notes = model.notebook.model.notes
+		 
+		 return buildMVCGroup("note", mvcId, ['domain':note, 'notes':notes, 'notebookGroup':app.groups["userNotebook"]])
 	 }
+	 
+	 
+//	 def addNote = { evt = null ->
+//		 log.info("#######  addNote  #####")
+//		 
+//		 def notes = model.notebook.model.notes
+//		 def mvcId = "note"+ System.currentTimeMillis()
+//		 return buildMVCGroup("note", mvcId, ['domain':new Note(), 'notes':notes, 'notebookGroup':app.groups["userNotebook"]])
+//	 }
 }
