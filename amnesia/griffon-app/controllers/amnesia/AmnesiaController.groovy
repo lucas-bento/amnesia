@@ -2,12 +2,14 @@ package amnesia
 
 import amnesia.domain.Note
 import amnesia.domain.Notebook;
+import amnesia.model.AmnesiaModel;
+
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery
 
 class AmnesiaController {
     // these will be injected by Griffon
-    def model
-    def view
+    AmnesiaModel model
+    AmnesiaView view
 
      void mvcGroupInit(Map args) {
 		 def notebookGroup
@@ -16,7 +18,6 @@ class AmnesiaController {
 			orient.getEntityManager().registerEntityClasses("amnesia.domain");
 			
 			List<Notebook> result = orient.query( new OSQLSynchQuery<Notebook>( "select * from Notebook where notebookId = 'userNotebook'" ) );
-			 
 			Notebook notebook = result.get(0)
 								 
 			def mvcId = notebook.id
@@ -46,12 +47,37 @@ class AmnesiaController {
 		 return buildMVCGroup("note", mvcId, ['domain':note, 'notes':notes, 'notebookGroup':app.groups["userNotebook"]])
 	 }
 	 
+	 def search = { evt = null ->
+		 def notes = model.notebook.model.notes
+		 
+		while(!model.notebook.model.notes.isEmpty()){
+			 notes.remove(0)
+		}
+		 
+		 withOrientdb { String databaseName, orient ->
+			 orient.getEntityManager().registerEntityClasses("amnesia.domain");
+			 
+			List<Notebook> result = orient.query( new OSQLSynchQuery<Notebook>( "select * from Notebook where notebookId = 'userNotebook'" ) );
+			Notebook notebook = result.get(0)
+			
+			
+			for (entry in notebook.notes){
+				Note note = entry.value
+				
+				if(note.currentContent =~ model.searchKey || note.currentTitle =~ model.searchKey){
+					def mvcId = "note"+ System.currentTimeMillis()
+					buildMVCGroup("note", mvcId, ['domain':note, 'notes':notes, 'notebookGroup':app.groups["userNotebook"]])
+				}
+			}
+		 }
+	 }
 	 
-//	 def addNote = { evt = null ->
-//		 log.info("#######  addNote  #####")
-//		 
-//		 def notes = model.notebook.model.notes
-//		 def mvcId = "note"+ System.currentTimeMillis()
-//		 return buildMVCGroup("note", mvcId, ['domain':new Note(), 'notes':notes, 'notebookGroup':app.groups["userNotebook"]])
-//	 }
+	 def cleanSearch = { evt = null ->
+		 if (model.searchKey.isAllWhitespace()){ 
+		 	search();
+		 }else{
+			view.searchField.text = ''
+			model.searchKey = ''
+		 }
+	 }
 }

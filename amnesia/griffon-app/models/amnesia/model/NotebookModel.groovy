@@ -8,7 +8,7 @@ class NotebookModel {
 	@Bindable String id
 //	@Bindable Date lastSynced
 //	@Bindable Date lastUpdated
-	@Bindable ObservableMap notes = new ObservableMap(new TreeMap())
+	@Bindable ObservableList notes = new ObservableList()
 	
 	String notebookId
 	def domain

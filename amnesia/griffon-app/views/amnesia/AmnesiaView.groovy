@@ -11,17 +11,23 @@ application(title: 'Amnesia - Gerenciador de Anotações',
                imageIcon('/icon-16x16.png').image]) {
 		   				
 		   
-		   borderLayout()
+		migLayout(layoutConstraints: "fill, gap 3:3:3",
+			constraints:"grow", 
+			columnConstraints: "fill,  grow, shrink",
+			rowConstraints:"fill,  grow, shrink" )
 		   
-		   panel(constraints: NORTH){
+		   panel(constraints: "north"){
 			   migLayout(layoutConstraints: "fill")
 			   button( text: "Nova Anotação", actionPerformed: controller.addNote, constraints: 'wrap, spanx, grow')
-			   label(text:"Buscar:")
-			   textField(constraints:'wrap, grow', columns:30)
+			   textField(id:'searchField', text: bind(target:model, targetProperty:'searchKey'), constraints:'grow', columns:30)
+			   
+			   button(icon:imageIcon(resource:'/search.png'), actionPerformed: controller.search)
+			   
+			   button(icon:imageIcon(resource:'/clear.png'), actionPerformed: controller.cleanSearch, constraints:'wrap')
+			   
 		   }
 		   
-		   
-		   scrollPane(constraints: 	CENTER) {
+		   scrollPane(constraints: 	"center, grow, shrink, wmin 10") {
 					panel(id: "notebookContainer") {}
 		   }
 }

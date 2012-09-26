@@ -20,13 +20,13 @@ class NotebookController {
 		  }
 		 
 		  model.notes.addPropertyChangeListener({ e ->
-			  if (!(e instanceof groovy.util.ObservableMap.PropertyEvent)) return
-			  switch(e.type) {
-				  case ObservableMap.PropertyEvent.ADDED:
+			  if (!(e instanceof groovy.util.ObservableList.ElementEvent)) return
+			  switch(e.changeType) {
+				  case ObservableList.ChangeType.ADDED:
 					  updateMasterPanel { add(e.newValue.view.detailPanel) }
 					  break
-				  case ObservableMap.PropertyEvent.REMOVED:
-					  updateMasterPanel { remove(e.view.detailPanel) }
+				  case ObservableList.ChangeType.REMOVED:
+					  updateMasterPanel { remove(e.oldValue.view.detailPanel) }
 					  break
 			  }
 		  } as PropertyChangeListener)
@@ -44,11 +44,11 @@ class NotebookController {
 
      }
 	 
-	 def addNote = { evt = null ->
-		 def mvcId = "note"+ System.currentTimeMillis()
-		 log.info(mvcId)
-		 Note note = new Note(noteId:mvcId, creationDate:new Date(), currentVersion:1, currentTitle:"", currentContent:"")
-		 
-		 return buildMVCGroup("note", mvcId, ['domain':note, 'notes':model.notes, 'notebookGroup':app.groups["userNotebook"]])
-	 }
+//	 def addNote = { evt = null ->
+//		 def mvcId = "note"+ System.currentTimeMillis()
+//		 log.info(mvcId)
+//		 Note note = new Note(noteId:mvcId, creationDate:new Date(), currentVersion:1, currentTitle:"", currentContent:"")
+//		 
+//		 return buildMVCGroup("note", mvcId, ['domain':note, 'notes':model.notes, 'notebookGroup':app.groups["userNotebook"]])
+//	 }
 }

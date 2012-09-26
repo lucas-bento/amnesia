@@ -24,8 +24,9 @@ class NoteController {
 		model.oldContent 		= model.currentContent
 		model.currentVersion	= args.domain.currentVersion
 		model.creationDate		= args.domain.creationDate
+		model.tags.addAll(args.domain.tags)
 		
-		notes[args.domain.noteId] = this
+		notes.add(0,this)
 		
 		log.info("${notes}")
 		
@@ -36,6 +37,7 @@ class NoteController {
 				
 		if(model.isChanged()){
 			log.info("saving--------------model:${model.currentContent} ")
+			log.info("lista de tags------------------------------------:${model.tags}")
 			model.update()
 						
 			withOrientdb { String databaseName, orient ->

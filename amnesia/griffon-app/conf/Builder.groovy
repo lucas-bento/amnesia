@@ -9,3 +9,9 @@ root {
 root.'GlazedlistsGriffonAddon'.addon=true
 
 root.'LookandfeelSubstanceGriffonAddon'.addon=true
+
+jx {
+    'groovy.swing.SwingXBuilder' {
+        view = '*'
+    }
+}

@@ -14,6 +14,7 @@ class NoteModel {
     @Bindable int currentVersion
     @Bindable Date creationDate
     def notebookGroup
+	def List tags = new ArrayList()
 	
 	String noteId
 	

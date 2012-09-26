@@ -195,3 +195,7 @@ log4j = {
 app.fileType = '.groovy'
 
 app.defaultPackageName = 'amnesia'
+
+app.fileType = '.groovy'
+
+app.defaultPackageName = 'amnesia'
