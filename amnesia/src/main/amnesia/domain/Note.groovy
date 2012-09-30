@@ -22,7 +22,10 @@ class Note {
 	 int currentVersion
 	 Date creationDate
 	 List versions
-	 List tags
+	 String tags
+	 
+	 Note previousVersion
+	 Note nextVersion
 	 
 	 public String toString(){
 		 return "[ id:${id}, version:${version}, noteId:${noteId}, currentTitle:${currentTitle}, currentContent:${currentContent},currentVersion:${currentVersion}, creationDate:${creationDate}]"

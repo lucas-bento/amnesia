@@ -4,6 +4,7 @@ import amnesia.domain.Note;
 import amnesia.domain.Notebook;
 import amnesia.model.NoteModel;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery
+import java.beans.PropertyChangeListener
 
 
 class NoteController {
@@ -13,6 +14,7 @@ class NoteController {
 	private notes
 
 	void mvcGroupInit(Map args) {
+		
 		notes 					= args.notes
 		model.notebookGroup 	= args.notebookGroup
 		
@@ -24,7 +26,8 @@ class NoteController {
 		model.oldContent 		= model.currentContent
 		model.currentVersion	= args.domain.currentVersion
 		model.creationDate		= args.domain.creationDate
-		model.tags.addAll(args.domain.tags)
+		model.tags              = args.domain.tags
+		model.previousVersion   = true
 		
 		notes.add(0,this)
 		
@@ -45,19 +48,35 @@ class NoteController {
 				
 				orient.withTransaction{
 				
-					List<Notebook> result = orient.query( new OSQLSynchQuery<Notebook>( "select * from Notebook where notebookId = 'userNotebook'" ) );
+					Notebook notebook = orient.query( new OSQLSynchQuery<Notebook>( "select * from Notebook where notebookId = 'userNotebook'" ) ).get(0);
 					
-				    Notebook notebook = result.get(0)
-					Note note = notebook.notes."${model.noteId}"
+					Note previousNote = notebook.notes."${model.noteId}"
+					Note note
 					
-					if(note == null) note = new Note(noteId:mvcId, creationDate:new Date(), currentVersion:1, currentTitle:"", currentContent:"")
+					def newId = "note"+ System.currentTimeMillis()
 					
-					note.currentContent = model.currentContent
-					note.currentTitle = model.currentTitle
+					if(previousNote == null) note = new Note(noteId:newId, creationDate:new Date(), currentVersion:1, currentTitle:"", currentContent:"")
+					else {
+						note = new Note(noteId:newId,
+						creationDate:new Date(),
+						currentVersion:previousNote.currentVersion+1,
+						currentTitle:"",
+						currentContent:"",
+						previousVersion:previousNote)
+					
+						previousNote.nextVersion = note
+						notebook.notes."${model.noteId}" = previousNote
+						orient.save(previousNote)
+						}
+
+					note.currentContent 		= model.currentContent
+					note.currentTitle 			= model.currentTitle
+					model.currentVersion 		= note.currentVersion
 										
 					log.info("Salvando anotação: ${notebook}")
 					orient.save(note)
-					notebook.notes."${model.noteId}" = note
+					notebook.notes."${newId}" = note
+					
 					orient.save(notebook)
 					
 				}

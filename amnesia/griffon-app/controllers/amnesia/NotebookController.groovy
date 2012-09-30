@@ -3,15 +3,17 @@ package amnesia
 import java.beans.PropertyChangeListener
 
 import amnesia.domain.Note
+import amnesia.model.NotebookModel;
 
 class NotebookController {
-    def model
+    NotebookModel model
     def view
 	
      void mvcGroupInit(Map args) {
 		 
 		 def updateMasterPanel = { cls ->
 			 cls.delegate = view.masterPanel
+			 
 			 view.masterPanel.with {
 				 cls()
 				 revalidate()
@@ -20,6 +22,7 @@ class NotebookController {
 		  }
 		 
 		  model.notes.addPropertyChangeListener({ e ->
+			  log.info("$e")
 			  if (!(e instanceof groovy.util.ObservableList.ElementEvent)) return
 			  switch(e.changeType) {
 				  case ObservableList.ChangeType.ADDED:
@@ -27,6 +30,10 @@ class NotebookController {
 					  break
 				  case ObservableList.ChangeType.REMOVED:
 					  updateMasterPanel { remove(e.oldValue.view.detailPanel) }
+					  break
+				  case ObservableList.ChangeType.UPDATED:
+					  updateMasterPanel { remove(e.oldValue.view.detailPanel) }
+					  updateMasterPanel { add(e.newValue.view.detailPanel) }
 					  break
 			  }
 		  } as PropertyChangeListener)
@@ -36,19 +43,13 @@ class NotebookController {
 		  model.domain 		= args.domain
 		  
 		  model.domain.notes.each { entry ->
-			  def note = entry.value
+			  Note note = entry.value
+			  if(note.nextVersion == null){
 			  
-			  def mvcId = note.noteId
-			  def noteGroup = buildMVCGroup("note", mvcId, ['domain':note, 'notes':model.notes, 'notebookGroup':app.groups["userNotebook"]])
+				  def mvcId = note.noteId
+				  def noteGroup = buildMVCGroup("note", mvcId, ['domain':note, 'notes':model.notes, 'notebookGroup':app.groups["userNotebook"]])
+		  	  }
 		  }
 
      }
-	 
-//	 def addNote = { evt = null ->
-//		 def mvcId = "note"+ System.currentTimeMillis()
-//		 log.info(mvcId)
-//		 Note note = new Note(noteId:mvcId, creationDate:new Date(), currentVersion:1, currentTitle:"", currentContent:"")
-//		 
-//		 return buildMVCGroup("note", mvcId, ['domain':note, 'notes':model.notes, 'notebookGroup':app.groups["userNotebook"]])
-//	 }
 }

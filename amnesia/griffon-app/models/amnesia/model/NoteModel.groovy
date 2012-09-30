@@ -13,8 +13,10 @@ class NoteModel {
 	@Bindable String currentContentBuffer
     @Bindable int currentVersion
     @Bindable Date creationDate
+	@Bindable boolean previousVersion
+	
     def notebookGroup
-	def List tags = new ArrayList()
+	@Bindable String tags
 	
 	String noteId
 	
