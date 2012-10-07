@@ -62,15 +62,6 @@ class AmnesiaController {
 
 			def keys = new ArrayList(notebook.notes.keySet())
 
-			//			keys.sort{a,b ->
-			//
-			//				def x = a.minus('note') as Long
-			//				def y = b.minus('note') as Long
-			//
-			//				x.compareTo(y) }
-
-			log.info("keys********************************** ${keys}")
-
 			for (key in keys){
 				Note currentNote = notebook.notes[key]
 

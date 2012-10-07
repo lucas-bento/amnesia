@@ -11,32 +11,7 @@ class NotebookController {
 	
      void mvcGroupInit(Map args) {
 		 
-		 def updateMasterPanel = { cls ->
-			 cls.delegate = view.masterPanel
-			 
-			 view.masterPanel.with {
-				 cls()
-				 revalidate()
-				 repaint()
-			 }
-		  }
-		 
-		  model.notes.addPropertyChangeListener({ e ->
-			  log.info("$e")
-			  if (!(e instanceof groovy.util.ObservableList.ElementEvent)) return
-			  switch(e.changeType) {
-				  case ObservableList.ChangeType.ADDED:
-					  updateMasterPanel { add(e.newValue.view.detailPanel) }
-					  break
-				  case ObservableList.ChangeType.REMOVED:
-					  updateMasterPanel { remove(e.oldValue.view.detailPanel) }
-					  break
-				  case ObservableList.ChangeType.UPDATED:
-					  updateMasterPanel { remove(e.oldValue.view.detailPanel) }
-					  updateMasterPanel { add(e.newValue.view.detailPanel) }
-					  break
-			  }
-		  } as PropertyChangeListener)
+		  model.notes.addPropertyChangeListener( notesListener as PropertyChangeListener)
 		 
 		  model.notebookId	= args.domain.notebookId
 		  model.id			= args.domain.id
@@ -52,4 +27,30 @@ class NotebookController {
 		  }
 
      }
+	 
+	 def notesListener = { e ->
+		 if (!(e instanceof groovy.util.ObservableList.ElementEvent)) return
+		 switch(e.changeType) {
+			 case ObservableList.ChangeType.ADDED:
+				 updateMasterPanel { add(e.newValue.view.detailPanel) }
+				 break
+			 case ObservableList.ChangeType.REMOVED:
+				 updateMasterPanel { remove(e.oldValue.view.detailPanel) }
+				 break
+			 case ObservableList.ChangeType.UPDATED:
+				 updateMasterPanel { remove(e.oldValue.view.detailPanel) }
+				 updateMasterPanel { add(e.newValue.view.detailPanel) }
+				 break
+		 }
+	 }
+	 
+	 def updateMasterPanel = { cls ->
+		 cls.delegate = view.masterPanel
+		 
+		 view.masterPanel.with {
+			 cls()
+			 revalidate()
+			 repaint()
+		 }
+	  }
 }

@@ -25,9 +25,9 @@ panel(id: "detailPanel",border: panelBorder) {
 			focusLost:{FocusEvent evt -> controller.save()}
 		)
 	
-	label(text: bind{model.creationDate == null ? "" : /*model.creationDate.format("dd MMM yyyy")*/model.creationDate.time }, font:italico, constraints:"wrap")
+	label(text: bind{model.creationDate == null ? "" : model.creationDate.format("dd MMM yyyy")/*model.creationDate.time*/ }, font:italico, constraints:"wrap")
 		
-	textArea(id:'currentContentInput', lineWrap:true, constraints: "grow 999,  spanx, width 5:200:, wrap",
+	textArea(id:'currentContentInput', lineWrap:true, constraints: "grow 999,  spanx, width 5:200:,height 60:: ,wrap",
 			 
 		text: bind(source:model, sourceProperty:'currentContent', mutual:true),
 		 		focusLost:{FocusEvent evt -> controller.save()}
@@ -36,7 +36,7 @@ panel(id: "detailPanel",border: panelBorder) {
 	label(icon:imageIcon(resource:'/tag_blue.png'))
 	
 	textField(text: bind(source:model, sourceProperty:'tags', mutual:true),border:emptyBorder(1), font:italico, constraints: "grow, wmin 200, spanx 4, push",
-			focusLost:{FocusEvent evt -> controller.saveLabels()}
+			focusLost:{FocusEvent evt -> controller.saveTags()}
 		)
 }
 

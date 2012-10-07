@@ -12,7 +12,8 @@ class NoteController {
     def view
 	private mvcId
 	private notes
-
+	private Timer saveTimer = new Timer()
+	
 	void mvcGroupInit(Map args) {
 		
 		notes 					= args.notes
@@ -30,17 +31,26 @@ class NoteController {
 		model.previousVersion   = true
 		
 		notes.add(0,this)
-		
+
+		model.initialized = true;
+				
 		log.info("${notes}")
 		
     }
 	
+	def saveAfter = {evt -> 
+		if(model.initialized){
+			saveTimer.cancel()
+			saveTimer.purge()
+			saveTimer = new Timer()
+			saveTimer.runAfter(60000, save)
+		}
+	}
 	
 	def save = { evt = null ->
 				
 		if(model.isChanged()){
 			log.info("saving--------------model:${model.currentContent} ")
-			log.info("lista de tags------------------------------------:${model.tags}")
 			model.update()
 						
 			withOrientdb { String databaseName, orient ->
@@ -71,17 +81,58 @@ class NoteController {
 
 					note.currentContent 		= model.currentContent
 					note.currentTitle 			= model.currentTitle
+					note.tags					= model.tags
 					model.currentVersion 		= note.currentVersion
 										
-					log.info("Salvando anotação: ${notebook}")
 					orient.save(note)
 					notebook.notes."${newId}" = note
 					
 					orient.save(notebook)
-					
 				}
 			}
 		}
-		log.info("not modified--------------model:${model.currentContent} ")
+	}
+	
+	def saveTags = { evt = null ->
+		
+		if(model.isChangedTags()){
+			log.info("lista de tags------------------------------------:${model.tags}")
+			model.updateTags()
+						
+			withOrientdb { String databaseName, orient ->
+				orient.getEntityManager().registerEntityClasses("amnesia.domain");
+				
+				orient.withTransaction{
+				
+					Notebook notebook = orient.query( new OSQLSynchQuery<Notebook>( "select * from Notebook where notebookId = 'userNotebook'" ) ).get(0);
+					
+					Note note = notebook.notes."${model.noteId}"
+					
+					if(note!=null) {
+		
+						note.tags					= model.tags
+						notebook.notes."${model.noteId}" = note
+
+						orient.save(note)
+						orient.save(notebook)
+					}
+				}
+			}
+		}
+	}
+	
+	def startTimer = { evt = null ->
+		doOutside {
+			
+		}
+	}
+	
+	def stopTimer = { evt = null ->
+		doOutside {
+			
+		}
 	}
 }
+	
+		
+

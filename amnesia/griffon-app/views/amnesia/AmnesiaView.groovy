@@ -1,7 +1,7 @@
 package amnesia
 
 application(title: 'Amnesia - Gerenciador de Anotações',
-  preferredSize: [400, 400],
+  preferredSize: [500, 800],
   pack: true,
   //location: [50,50],
   locationByPlatform:true,
