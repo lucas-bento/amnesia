@@ -19,7 +19,7 @@ class NotebookController {
 		  
 		  model.domain.notes.each { entry ->
 			  Note note = entry.value
-			  if(note.nextVersion == null){
+			  if(!note.nextVersion){
 			  
 				  def mvcId = note.noteId
 				  def noteGroup = buildMVCGroup("note", mvcId, ['domain':note, 'notes':model.notes, 'notebookGroup':app.groups["userNotebook"]])

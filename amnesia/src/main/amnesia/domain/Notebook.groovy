@@ -20,7 +20,6 @@ public class Notebook {
 	Date lastUpdated
 	Map notes = new HashMap()
 	
-	
 	public String toString(){
 		return "[ id:${id}, version:${version}, notebookId:${notebookId}, lastSynced:${lastSynced}, lastUpdated:${lastUpdated}, notes.size:${notes.size}]"
 	}

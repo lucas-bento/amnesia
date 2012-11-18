@@ -174,6 +174,16 @@ griffon.project.dependency.resolution = {
 
         // runtime 'mysql:mysql-connector-java:5.1.5'
 		runtime 'javax:javaee-api:6.0'
+		
+		runtime ('xerces:xercesImpl:2.8.1'){
+			excludes "xml-apis"
+		}
+		
+		runtime ('net.sourceforge.nekohtml:nekohtml:1.9.9'){
+			excludes "xercesImpl"
+		}
+		
+		
     }
 }
 

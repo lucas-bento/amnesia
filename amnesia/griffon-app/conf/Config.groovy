@@ -13,8 +13,12 @@ log4j = {
            'griffon.app'
 }
 
+griffon.rest.injectInto = ['controller', 'service']
+
 lookandfeel {
 	  lookAndFeel = 'Substance'
-	  theme = 'Graphite'
+	  theme = 'MistSilver'
 	
 }
+
+splash.image = 'banner.jpg'

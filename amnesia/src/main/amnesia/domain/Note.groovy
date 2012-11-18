@@ -24,8 +24,8 @@ class Note {
 	 List versions
 	 String tags
 	 
-	 Note previousVersion
-	 Note nextVersion
+	 Boolean previousVersion
+	 Boolean nextVersion
 	 
 	 public String toString(){
 		 return "[ id:${id}, version:${version}, noteId:${noteId}, currentTitle:${currentTitle}, currentContent:${currentContent},currentVersion:${currentVersion}, creationDate:${creationDate}]"

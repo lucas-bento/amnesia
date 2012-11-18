@@ -4,5 +4,6 @@ import groovy.beans.Bindable
 
 class AmnesiaModel {
    def notebook
-   def @Bindable searchKey = ''
+   
+   def searchGroup
 }

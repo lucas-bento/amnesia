@@ -12,44 +12,38 @@
  * - execInsideUISync { // your code }
  */
 
-import java.util.Date;
 
-import groovy.swing.SwingBuilder
-import amnesia.domain.Note;
-import amnesia.domain.Notebook;
+import org.slf4j.LoggerFactory
+
+import amnesia.domain.Note
+import amnesia.domain.Notebook
 
 import com.orientechnologies.orient.core.db.ODatabase
 import com.orientechnologies.orient.core.db.object.ODatabaseObjectTx
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
-import static griffon.util.GriffonApplicationUtils.isMacOSX
 
 
-//SwingBuilder.lookAndFeel((isMacOSX ? 'system' : 'nimbus'), 'gtk', ['metal', [boldFonts: false]])
 
 /* *** Cria uma base de dados do orientdb caso não exista uma  *** */  
 def databaseClass = app.class.classLoader.loadClass('OrientdbConfig')
 ConfigObject config = new ConfigSlurper(Environment.current.name).parse(databaseClass).database
+
+griffon.plugins.splash.SplashScreen.instance.showStatus("Iniciando...")
+SplashGriffonAddon.display(app)
 
 
 ODatabase database = new ODatabaseObjectTx( config.url )
 if ( !database.exists() ){
 	def log = LoggerFactory.getLogger("Initialize.groovy")
 	log.warn("Base de dados não encontrada. Uma nova sera criada: "+ config.url)
+	griffon.plugins.splash.SplashScreen.instance.showStatus("Base de dados não encontrada. Uma nova sera criada: "+ config.url)
 	
 	database.create()
 	database.getEntityManager().registerEntityClasses("amnesia.domain");
 	
-	Notebook notebook =  new Notebook()
+	Notebook notebook =  new Notebook(notebookId:"userNotebook", lastSynced:new Date(), lastUpdated:new Date())
 	Note note = new Note(noteId:'note1',currentContent:'Exemplo de anotação.\nCrie novas anotações!', currentTitle:'Primeira Anotação', creationDate: new Date() -1, tags:"tag1,tag2", currentVersion:1)
-	Note note2 = new Note(noteId:'note2',currentContent:'Segunda Anotação', currentTitle:'Segunda Anotação', creationDate:new Date(), tags:"tag2,tag3", currentVersion:1)
 	
-	notebook.notebookId = "userNotebook"
-	notebook.lastSynced = new Date()
-	notebook.lastUpdated = new Date()
 	notebook.notes."${note.noteId}" = note
-	notebook.notes."${note2.noteId}" = note2
 	
 	database.save(notebook)
 	

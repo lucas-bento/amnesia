@@ -1,16 +1,21 @@
 package amnesia
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 import amnesia.domain.Note
 import amnesia.domain.Notebook;
+import amnesia.domain.SyncNotebook
 import amnesia.model.AmnesiaModel;
+import static groovyx.net.http.ContentType.JSON
 
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery
 
 class AmnesiaController {
-	// these will be injected by Griffon
 	AmnesiaModel model
 	AmnesiaView view
-
+	
 	void mvcGroupInit(Map args) {
 		def notebookGroup
 
@@ -24,18 +29,29 @@ class AmnesiaController {
 			notebookGroup = buildMVCGroup("notebook", mvcId, [domain:notebook])
 
 			model.notebook = notebookGroup
+			
 		}
 
 
-		def root = view.notebookContainer.parent
-
+		def notebookParent = view.notebookContainer.parent
 		// remove mainPanel placeholder
-		root.remove(view.notebookContainer)
+		notebookParent.remove(view.notebookContainer)
 		// inject the real deal
-		root.add(notebookGroup.view.masterPanel)
-
+		notebookParent.add(notebookGroup.view.masterPanel)
 		// rewire variable references
 		view.notebookContainer = notebookGroup.view.masterPanel
+
+		
+		def searchGroup = buildMVCGroup("search", "search", [notes:model.notebook.model.notes])
+		model.searchGroup = searchGroup
+		
+		def searchParent = view.searchPanelContainer.parent
+		// remove mainPanel placeholder
+		searchParent.remove(view.searchPanelContainer)
+		// inject the real deal
+		searchParent.add(searchGroup.view.searchPanel)
+		// rewire variable references
+		view.searchPanelContainer = searchGroup.view.searchPanel
 	}
 
 	def addNote = { evt = null ->
@@ -47,51 +63,72 @@ class AmnesiaController {
 		return buildMVCGroup("note", mvcId, ['domain':note, 'notes':notes, 'notebookGroup':app.groups["userNotebook"]])
 	}
 
-	def synchronized  search = { evt = null ->
-		def notes = model.notebook.model.notes
+	def sync = { evt = null ->
+		Notebook notebook
+		
+		doOutside {
+				withOrientdb { String databaseName, orient ->
+					orient.getEntityManager().registerEntityClasses("amnesia.domain");
+		
+					List<Notebook> result = orient.query( new OSQLSynchQuery<Notebook>( "select * from Notebook where notebookId = 'userNotebook'" ) )
+					notebook = result.get(0)
+					notebook.notes.each{1+1}
+				}
+				
+				SyncNotebook syncNotebook = new SyncNotebook(notebook);
+			   
+				def postResponse
+			    def getResponse
+			   
+			   withRest( uri: "http://localhost:8080/amnesia-sync/" ) {
+				  postResponse = post( path: "note/${syncNotebook.lastUpdated.getTime()}",
+					  					body:["notes":syncNotebook.notes],
+										contentType: JSON)
+			   }
+			   
+			   if(postResponse.status == 200) {
+				   withRest( uri: "http://localhost:8080/amnesia-sync/" ) {
+					   getResponse = get( path:"note/${syncNotebook.lastUpdated.getTime()}", contentType:JSON )
+				   }
+				   
+				   created = new ArrayList()
+				   
+				   getResponse.data.each(createNote)
+				   
+			   } else {
+				  // TODO display an error dialog
+			   }
+			   
+			}
+	}
+	
+	def createNote = { paramNote ->
+		
+	   Note note = new Note()
 
-		while(!model.notebook.model.notes.isEmpty()){
-			notes.remove(0)
-		}
+	   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+	   
+	   note.noteId 			= paramNote.noteId 
+	   note.currentTitle 	= paramNote.currentTitle
+	   note.currentContent 	= paramNote.currentContent
+	   note.currentVersion 	= paramNote.currentVersion
+	   note.creationDate 	= sdf.parse(paramNote.creationDate)
+	   note.tags 			= paramNote.tags
+	   note.previousVersion = paramNote.previousVersion 
+	   note.nextVersion 	= paramNote.nextVersion
 
 		withOrientdb { String databaseName, orient ->
 			orient.getEntityManager().registerEntityClasses("amnesia.domain");
 
-			List<Notebook> result = orient.query( new OSQLSynchQuery<Notebook>( "select * from Notebook where notebookId = 'userNotebook'" ) );
-			Notebook notebook = result.get(0)
-
-			def keys = new ArrayList(notebook.notes.keySet())
-
-			for (key in keys){
-				Note currentNote = notebook.notes[key]
-
-				if(model.searchKey.isAllWhitespace()){
-					if(currentNote.nextVersion == null){
-						buildNoteGroup(currentNote, notes)
-					}
-				}else if(currentNote.currentContent =~ model.searchKey || currentNote.currentTitle =~ model.searchKey || currentNote.tags =~ model.searchKey){
-					buildNoteGroup(currentNote, notes)
-				}
-			}
-		}
-
-	}
-
-	def buildNoteGroup = {note, notes ->
-		def mvcId = "note"+ System.currentTimeMillis()
-		buildMVCGroup("note", mvcId, ['domain':note, 'notes':notes, 'notebookGroup':app.groups["userNotebook"]])
-	}
-
-	def searchNotes = { evt = null ->
-		search();
-	}
-
-	def cleanSearch = { evt = null ->
-		if (model.searchKey.isAllWhitespace()){
-			search();
-		}else{
-			view.searchField.text = ''
-			model.searchKey = ''
+			List<Notebook> result = orient.query( new OSQLSynchQuery<Notebook>( "select * from Notebook where notebookId = 'userNotebook'" ) )
+			def notebook = result.get(0)
+			
+			orient.save(note)
+			notebook.notes."$note.noteId" = note
+			
+			notebook.lastUpdated = new Date()
+			orient.save(notebook)
 		}
 	}
+	
 }

@@ -1,15 +1,16 @@
 package amnesia
 
 application(title: 'Amnesia - Gerenciador de Anotações',
-  preferredSize: [500, 800],
+  preferredSize: [500, 700],
   pack: true,
-  //location: [50,50],
+  location: [250,0],
   locationByPlatform:true,
-  iconImage: imageIcon('/icon-48x48.png').image,
-  iconImages: [imageIcon('/icon-48x48.png').image,
-               imageIcon('/icon-32x32.png').image,
-               imageIcon('/icon-16x16.png').image]) {
-		   				
+  iconImage: imageIcon('/48x48.png').image,
+  iconImages: [imageIcon('/64x64.png').image,
+	  		   imageIcon('/48x48.png').image,
+               imageIcon('/32x32.png').image,
+               imageIcon('/16x16.png').image]) {
+	   
 		   
 		migLayout(layoutConstraints: "fill, gap 3:3:3",
 			constraints:"grow", 
@@ -18,16 +19,14 @@ application(title: 'Amnesia - Gerenciador de Anotações',
 		   
 		   panel(constraints: "north"){
 			   migLayout(layoutConstraints: "fill, nogrid")
-			   button( text: "Nova Anotação", actionPerformed: controller.addNote, constraints: 'wrap, spanx, grow')
-			   textField(id:'searchField', text: bind(target:model, targetProperty:'searchKey'), constraints:'grow', columns:30)
 			   
-			   button(icon:imageIcon(resource:'/search.png'), actionPerformed: controller.searchNotes)
+			   button( text: "Nova Anotação", actionPerformed: controller.addNote, constraints: 'spanx, grow')
+			   button( icon:imageIcon(resource:'/sync.png'), actionPerformed: controller.sync, constraints: 'wrap')
 			   
-			   button(icon:imageIcon(resource:'/clear.png'), actionPerformed: controller.cleanSearch, constraints:'wrap')
-			   
+			   panel(id:"searchPanelContainer", constraints: 'grow'){}
 		   }
 		   
-		   scrollPane(constraints: 	"center") {
-					panel(id: "notebookContainer") {}
+		   scrollPane(constraints: 	"center, shrink") {
+				panel(id: "notebookContainer") {}
 		   }
 }
