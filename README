@@ -1,0 +1,2 @@
+Este trabalho desenvolve uma aplicação para uso em computadores desktops com o intuito servir como gerenciador de anotações pessoais, com funcionalidades de versionamento e sincronização remota dos dados do usuário.
+O projeto inclui análise, planejamento e implementação do software, realizados seguindo a metodologia orientada a objetos. O desenvolvimento deverá ser feito utilizando a linguagem de programação Groovy e o banco de dados orientado a documentos OrientDB.
